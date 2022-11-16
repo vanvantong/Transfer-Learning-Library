@@ -214,3 +214,34 @@ If you use this toolbox or benchmark in your research, please cite this project.
 
 We would like to thank School of Software, Tsinghua University and The National Engineering Laboratory for Big Data Software for providing such an excellent ML research platform.
 
+##
+    `Learning Transferable Features with Deep Adaptation Networks (ICML 2015) <https://arxiv.org/pdf/1502.02791>`_
+    Given source domain :math:`\mathcal{D}_s` of :math:`n_s` labeled points and target domain :math:`\mathcal{D}_t`
+    of :math:`n_t` unlabeled points drawn i.i.d. from P and Q respectively, the deep networks will generate
+    activations as :math:`\{z_i^s\}_{i=1}^{n_s}` and :math:`\{z_i^t\}_{i=1}^{n_t}`.
+    The MK-MMD :math:`D_k (P, Q)` between probability distributions P and Q is defined as
+    .. math::
+        D_k(P, Q) \triangleq \| E_p [\phi(z^s)] - E_q [\phi(z^t)] \|^2_{\mathcal{H}_k},
+    :math:`k` is a kernel function in the function space
+    .. math::
+        \mathcal{K} \triangleq \{ k=\sum_{u=1}^{m}\beta_{u} k_{u} \}
+    where :math:`k_{u}` is a single kernel.
+    Using kernel trick, MK-MMD can be computed as
+    .. math::
+        \hat{D}_k(P, Q) &=
+        \dfrac{1}{n_s^2} \sum_{i=1}^{n_s}\sum_{j=1}^{n_s} k(z_i^{s}, z_j^{s})\\
+        &+ \dfrac{1}{n_t^2} \sum_{i=1}^{n_t}\sum_{j=1}^{n_t} k(z_i^{t}, z_j^{t})\\
+        &- \dfrac{2}{n_s n_t} \sum_{i=1}^{n_s}\sum_{j=1}^{n_t} k(z_i^{s}, z_j^{t}).\\
+    Args:
+        kernels (tuple(torch.nn.Module)): kernel functions.
+        linear (bool): whether use the linear version of DAN. Default: False
+    Inputs:
+        - z_s (tensor): activations from the source domain, :math:`z^s`
+        - z_t (tensor): activations from the target domain, :math:`z^t`
+    Shape:
+        - Inputs: :math:`(minibatch, *)`  where * means any dimension
+        - Outputs: scalar
+    .. note::
+        Activations :math:`z^{s}` and :math:`z^{t}` must have the same shape.
+    .. note::
+        The kernel values will add up when there are multiple kernels.
